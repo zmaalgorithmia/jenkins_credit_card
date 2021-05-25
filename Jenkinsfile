@@ -9,12 +9,12 @@ pipeline {
         PYTHONUNBUFFERED = '1'
     }
     stages {
-        // stage('Build') {
-        //     steps {
-        //         checkout([$class: 'GitSCM', branches: [[name: '*/main']],
-        //         userRemoteConfigs: [[url: 'https://github.com/ddreakfordalgorithmia/jenkins_deploy_to_algorithmia.git']]])
-        //     }
-        // }
+        stage('Build') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']],
+                userRemoteConfigs: [[url: 'https://github.com/ddreakfordalgorithmia/jenkins_deploy_to_algorithmia.git']]])
+            }
+        }
         stage('Deploy') {
             steps {
                 // use a python environment with: algorithmia>=1.2.0, gitpython>=2.1.0, six>=1.12.0
