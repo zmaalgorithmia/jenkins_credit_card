@@ -19,8 +19,8 @@ pipeline {
             steps {
                 // use a python environment with: algorithmia>=1.2.0, gitpython>=2.1.0, six>=1.12.0
                 withPythonEnv('Python-3.8') {
-                    sh 'pip install -r jenkins_deploy_algorithmia/requirements.txt'
-                    sh 'python jenkins_deploy_algorithmia/model_deploy.py'
+                    sh 'pip install -r requirements.txt'
+                    sh 'python model_deploy.py'
                 }
             }
         }
