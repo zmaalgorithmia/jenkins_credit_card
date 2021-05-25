@@ -7,7 +7,7 @@ from os import environ
 COLLECTION_NAME = 'digit_recognition'
 
 # path within this repo where the algo.py, requirements.txt, and model file are located
-ALGO_TEMPLATE_PATH = 'jenkins_deploy_algorithmia/algorithm_template/'
+ALGO_TEMPLATE_PATH = 'algorithm_template/'
 
 # name of the model file to be uploaded to Hosted Data
 MODEL_FILE = 'digits_classifier.pkl'

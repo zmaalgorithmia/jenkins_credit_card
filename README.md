@@ -31,7 +31,7 @@ Copy [jenkins_jobs/Deploy Pretrained Model Freestyle](jenkins_jobs) into your Je
 export GIT_CONFIG_NOSYSTEM=1
 export PYTHONUNBUFFERED=1
 # use a python environment with: algorithmia>=1.2.0, gitpython>=2.1.0, six>=1.12.0
-python jenkins_deploy_algorithmia/model_deploy.py
+python model_deploy.py
 ```
 
 ### Option B: Jenkins "pipeline" project
@@ -61,7 +61,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // use a python environment with: algorithmia>=1.2.0, gitpython>=2.1.0, six>=1.12.0
-                sh 'python jenkins_deploy_algorithmia/model_deploy.py'
+                sh 'python model_deploy.py'
             }
         }
     }
