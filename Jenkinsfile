@@ -11,8 +11,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']],
-     userRemoteConfigs: [[url: 'https://github.com/ddreakfordalgorithmia/model-deployment.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']],
+                userRemoteConfigs: [[url: 'https://github.com/ddreakfordalgorithmia/jenkins_deploy_to_algorithmia.git']]])
             }
         }
         stage('Deploy') {
