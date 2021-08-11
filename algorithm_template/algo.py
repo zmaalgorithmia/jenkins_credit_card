@@ -6,7 +6,6 @@ import numpy as np
 client = Algorithmia.client()
 
 # load model from Data URI - see https://algorithmia.com/developers/data/
-#
 modelFile = client.file('data://username/demo/digits_classifier.pkl').getFile().name
 model = joblib.load(modelFile)
 
