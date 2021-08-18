@@ -12,13 +12,13 @@ pipeline {
         stage('Build') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']],
-                userRemoteConfigs: [[url: 'https://github.com/ddreakfordalgorithmia/jenkins_deploy_to_algorithmia.git']]])
+                userRemoteConfigs: [[url: 'https://github.com/zmaalgorithmia/jenkins_deployment.git']]])
             }
         }
         stage('Deploy') {
             steps {
                 // use a python environment with: algorithmia>=1.2.0, gitpython>=2.1.0, six>=1.12.0
-                withPythonEnv('Python-3.8') {
+                withPythonEnv('Python-3.9') {
                     sh 'pip install -r requirements.txt'
                     sh 'python model_deploy.py'
                 }
