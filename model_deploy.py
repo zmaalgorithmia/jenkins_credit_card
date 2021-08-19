@@ -7,7 +7,7 @@ from six.moves.urllib.parse import quote_plus
 from tempfile import mkdtemp
 from time import sleep
 
-## CONFIGURABLE SETTINGS:
+# CONFIGURABLE SETTINGS:
 
 # using a rotating algo name for demo, but this can be any name you prefer; it will be created under https://{ALGORITHMIA_ENDPOINT}/algorithms/[YOUR_USERNAME]
 ALGO_NAME = 'digit_recognition_'+datetime.now().strftime('%Y%m%d%H%M%S')
@@ -41,11 +41,13 @@ ALGO_TEMPLATE_PATH = 'algorithm_template/'
 MODEL_FILE = 'digits_classifier.pkl'
 
 # if you need to update the contents of algo.py during deployment, do so here
+
+
 def UPDATE_ALGORITHM_TEMPLATE(file_contents):
     return file_contents.replace('data://username/demo/'+MODEL_FILE, data_path+'/'+MODEL_FILE)
 
 
-## DEPLOYMENT SCRIPT:
+# DEPLOYMENT SCRIPT:
 
 # verify that environment keys are set
 api_key = environ.get('ALGORITHMIA_API_KEY')
@@ -53,18 +55,21 @@ algo_domain = environ.get('ALGORITHMIA_DOMAIN')
 algo_endpoint = f"https://{algo_domain}"
 username = environ.get('ALGORITHMIA_USERNAME')
 if not api_key:
-    raise SystemExit('Please set the environment variable ALGORITHMIA_MANAGEMENT_API_KEY (key must have permission to manage algorithms)')
+    raise SystemExit(
+        'Please set the environment variable ALGORITHMIA_MANAGEMENT_API_KEY (key must have permission to manage algorithms)')
 if not algo_domain:
-    raise SystemExit('Please set the environment variable ALGORITHMIA_DOMAIN (e.g. algorithmia.com')
+    raise SystemExit(
+        'Please set the environment variable ALGORITHMIA_DOMAIN (e.g. algorithmia.com')
 if not username:
-    raise SystemExit('Please set the environment variable ALGORITHMIA_USERNAME')
+    raise SystemExit(
+        'Please set the environment variable ALGORITHMIA_USERNAME')
 
 # set up Algorithmia client and path names
 algo_full_name = username+'/'+ALGO_NAME
 data_path = 'data://'+username+'/'+COLLECTION_NAME
 client = Algorithmia.client(api_key, algo_endpoint)
 algo = client.algo(algo_full_name)
-algo.set_options(timeout=300) # optional
+algo.set_options(timeout=300)  # optional
 
 # create Hosted Data collection
 print('CREATING '+data_path)
@@ -82,7 +87,8 @@ print(f"ON Algorithmia cluster: {algo_endpoint}")
 try:
     print(algo.create(details=ALGORITHM_DETAILS, settings=ALGORITHM_SETTINGS))
 except Exception as x:
-    raise SystemExit('ERROR: cannot create {}: if the Algorithm already exists and you wish to overwrite it, remove/ignore this step\n{}'.format(algo_full_name, x))
+    raise SystemExit(
+        'ERROR: cannot create {}: if the Algorithm already exists and you wish to overwrite it, remove/ignore this step\n{}'.format(algo_full_name, x))
 
 # git clone the created algorithm's repo into a temp directory
 tmpdir = mkdtemp()
@@ -94,7 +100,7 @@ cloned_repo = Repo.clone_from(algo_repo, tmpdir)
 
 # Add algo.py into repo
 print('ADDING algorithm files...')
-algorithm_file_name='{}.py'.format(algo_full_name.split('/')[1])
+algorithm_file_name = '{}.py'.format(algo_full_name.split('/')[1])
 # Add requirements.txt into repo
 copyfile(ALGO_TEMPLATE_PATH+'requirements.txt', tmpdir+'/requirements.txt')
 print(f"Copied requirements.txt to {tmpdir}/requirements.txt")
@@ -128,17 +134,19 @@ except:
     try:
         sleep(60)
         results = algo.publish(
-            settings = {
+            settings={
                 "algorithm_callability": "private"
             },
-            version_info = {
+            version_info={
                 "release_notes": "Automatically created, deployed and published from Jenkins.",
                 "sample_input": "https://commons.wikimedia.org/wiki/File:Digital_Digits.png",
                 "version_type": "minor",
             },
-            details = ALGORITHM_DETAILS        
+            details=ALGORITHM_DETAILS
         )
     except Exception as x:
-        raise SystemExit('ERROR: unable to publish Algorithm: code will not compile, or compile takes too long\n{}'.format(x))
+        raise SystemExit(
+            'ERROR: unable to publish Algorithm: code will not compile, or compile takes too long\n{}'.format(x))
 print(results)
-print(f"DEPLOYED version {results.version_info.semantic_version} to {algo_endpoint}/algorithms/{algo_full_name}")
+print(
+    f"DEPLOYED version {results.version_info.semantic_version} to {algo_endpoint}/algorithms/{algo_full_name}")
