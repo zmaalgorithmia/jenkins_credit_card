@@ -7,7 +7,7 @@ from six.moves.urllib.parse import quote_plus
 from tempfile import mkdtemp
 from time import sleep
 
-# --------- Algorithm name and metatadata ---------
+### --------- Algorithm name and metatadata ---------
 #
 
 # The algorithm will be created under https://{ALGORITHMIA_ENDPOINT}/algorithms/[YOUR_USERNAME]
@@ -33,7 +33,9 @@ ALGORITHM_SETTINGS = {
 
 # config your publish settings as per https://docs.algorithmia.com/#publish-an-algorithm
 ALGORITHM_VERSION_INFO = {
-    'sample_input': 'https://github.com/algorithmiaio/sample-apps/blob/master/algo-dev-demo/digit_recognition/images/digit_1.png?raw=true'
+    "release_notes": "Automatically created, deployed and published from Jenkins.",
+    "sample_input": "https://commons.wikimedia.org/wiki/File:Digital_Digits.png",
+    "version_type": "minor"
 }
 
 # path within this repo where the algo.py, requirements.txt, and model file are located
@@ -43,19 +45,17 @@ ALGO_TEMPLATE_PATH = 'algorithm_template/'
 MODEL_FILE = 'digits_classifier.pkl'
 
 # if you need to update the contents of algo.py during deployment, do so here
-
-
 def UPDATE_ALGORITHM_TEMPLATE(file_contents):
     return file_contents.replace('data://username/demo/'+MODEL_FILE, data_path+'/'+MODEL_FILE)
 
 
-# --------- REQUIRED ENVIRONMENT VARIABLES ----------
+### --------- REQUIRED ENVIRONMENT VARIABLES ----------
 #
 # ALGORITHMIA_API_KEY - must have permission to manage algorithms
 #
 # ALGORITHMIA_DOMAIN - your Algorithmia Enterprise domain
 #    E.g.: YOUR_COMPANY.productionize.ai
-#
+# 
 # ALGORITHMIA_USERNAME - self explanatory
 #
 api_key = environ.get('ALGORITHMIA_API_KEY')
@@ -63,21 +63,18 @@ algo_domain = environ.get('ALGORITHMIA_DOMAIN')
 algo_endpoint = f"https://{algo_domain}"
 username = environ.get('ALGORITHMIA_USERNAME')
 if not api_key:
-    raise SystemExit(
-        'Please set the environment variable ALGORITHMIA_API_KEY (key must have permission to manage algorithms)')
+    raise SystemExit('Please set the environment variable ALGORITHMIA_API_KEY (key must have permission to manage algorithms)')
 if not algo_domain:
-    raise SystemExit(
-        'Please set the environment variable ALGORITHMIA_DOMAIN (e.g. algorithmia.com')
+    raise SystemExit('Please set the environment variable ALGORITHMIA_DOMAIN (e.g. algorithmia.com')
 if not username:
-    raise SystemExit(
-        'Please set the environment variable ALGORITHMIA_USERNAME')
+    raise SystemExit('Please set the environment variable ALGORITHMIA_USERNAME')
 
 # set up Algorithmia client and path names
 algo_full_name = username+'/'+ALGO_NAME
 data_path = 'data://'+username+'/'+COLLECTION_NAME
 client = Algorithmia.client(api_key, algo_endpoint)
 algo = client.algo(algo_full_name)
-algo.set_options(timeout=300)  # optional
+algo.set_options(timeout=300) # optional
 
 # create Hosted Data collection
 print('CREATING '+data_path)
@@ -99,14 +96,11 @@ except Exception as x:
     if 'already exists' in str(x):
         try:
             print(f"UPDATING algorithm: {algo_full_name}")
-            print(algo.update(details=ALGORITHM_DETAILS,
-                  settings=ALGORITHM_SETTINGS))
+            print(algo.update(details=ALGORITHM_DETAILS, settings=ALGORITHM_SETTINGS))
         except Exception as x:
-            raise SystemExit(
-                'ERROR: could not UPDATE {}: \n{}'.format(algo_full_name, x))
+            raise SystemExit('ERROR: could not UPDATE {}: \n{}'.format(algo_full_name, x))
     else:
-        raise SystemExit(
-            'ERROR: could not CREATE {}: \n{}'.format(algo_full_name, x))
+        raise SystemExit('ERROR: could not CREATE {}: \n{}'.format(algo_full_name, x))
 
 # git clone the created algorithm's repo into a temp directory
 tmpdir = mkdtemp()
@@ -118,7 +112,7 @@ cloned_repo = Repo.clone_from(algo_repo, tmpdir)
 
 # Add algo.py into repo
 print('ADDING algorithm files...')
-algorithm_file_name = '{}.py'.format(algo_full_name.split('/')[1])
+algorithm_file_name='{}.py'.format(algo_full_name.split('/')[1])
 # Add requirements.txt into repo
 copyfile(ALGO_TEMPLATE_PATH+'requirements.txt', tmpdir+'/requirements.txt')
 print(f"Copied requirements.txt to {tmpdir}/requirements.txt")
@@ -146,25 +140,26 @@ origin.push()
 print('PUBLISHING '+algo_full_name)
 sleep(15)
 try:
-    results = algo.publish(version_info=ALGORITHM_VERSION_INFO)
+    results = algo.publish(
+        settings = {
+            "algorithm_callability": "private"
+        },
+        version_info=ALGORITHM_VERSION_INFO,
+        details = ALGORITHM_DETAILS
+    )
 except:
     # print('RETRYING: if this occurs repeatedly, increase the sleep() time before the PUBLISH step to allow for compilation time')
     try:
         sleep(60)
         results = algo.publish(
-            settings={
+            settings = {
                 "algorithm_callability": "private"
             },
-            version_info={
-                "release_notes": "Automatically created, deployed and published from Jenkins.",
-                "sample_input": "https://commons.wikimedia.org/wiki/File:Digital_Digits.png",
-                "version_type": "minor",
-            },
-            details=ALGORITHM_DETAILS
+            version_info = ALGORITHM_VERSION_INFO,
+            details = ALGORITHM_DETAILS        
         )
     except Exception as x:
-        raise SystemExit(
-            'ERROR: unable to publish Algorithm: code will not compile, or compile takes too long\n{}'.format(x))
+        raise SystemExit('ERROR: unable to publish Algorithm: code will not compile, or compile takes too long\n{}'.format(x))
+
 print(results)
-print(
-    f"DEPLOYED version {results.version_info.semantic_version} to {algo_endpoint}/algorithms/{algo_full_name}")
+print(f"DEPLOYED version {results.version_info.semantic_version} to {algo_endpoint}/algorithms/{algo_full_name}")
