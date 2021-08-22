@@ -40,7 +40,7 @@ ALGORITHM_VERSION_INFO = {
 }
 
 # path within this repo where the algo.py, requirements.txt, and model file are located
-ALGO_TEMPLATE_PATH = 'credit_card_approval/'
+ALGO_TEMPLATE_PATH = 'credit_card_approval_serial_batch/'
 
 # name of the model file to be uploaded to Hosted Data
 MODEL_FILE = 'model-a.joblib'
