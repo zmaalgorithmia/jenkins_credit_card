@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']],
-                userRemoteConfigs: [[url: 'https://github.com/zmaalgorithmia/jenkins_deployment.git']]])
+                userRemoteConfigs: [[url: 'https://github.com/zmaalgorithmia/jenkins_credit_card.git']]])
             }
         }
         stage('Deploy') {
