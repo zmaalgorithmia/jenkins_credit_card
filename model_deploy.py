@@ -42,7 +42,7 @@ ALGORITHM_VERSION_INFO = {
 ALGO_TEMPLATE_PATH = 'credit_card_approval/'
 
 # name of the model file to be uploaded to Hosted Data
-MODEL_FILE = 'model-a.joblilb'
+MODEL_FILE = 'model-a.joblib'
 
 # if you need to update the contents of algo.py during deployment, do so here
 
