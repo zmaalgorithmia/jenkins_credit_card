@@ -11,7 +11,7 @@ client = Algorithmia.client(ALGORITHMIA_API_KEY, ALGORITHMIA_API)
 
 # Model version A - Gradient boosting classified
 model = load(client.file(
-    "data://algorithmia_se/CreditCardApproval/model-a.joblib").getFile().name)
+    "data://zma/credit_card_approval/model-a.joblib").getFile().name)
 
 
 # Model version B - Random forest classifier
