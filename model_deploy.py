@@ -31,7 +31,7 @@ ALGORITHM_SETTINGS = {
     'environment': 'cpu'
 }
 
-sample_input = str({
+sample_input = {
     "high_balance": 0,
     "owns_home": 1,
     "child_one": 0,
@@ -61,7 +61,7 @@ sample_input = str({
     "marital_separated": 0,
     "marital_single_not_married": 1,
     "marital_widow": 0,
-})
+}
 
 # config your publish settings as per https://docs.algorithmia.com/#publish-an-algorithm
 ALGORITHM_VERSION_INFO = {
