@@ -84,7 +84,7 @@ def apply(input):
             "%Y-%m-%d_%H:%M:%S.%f")[:-3],
         "completion time": end_time.strftime(
             "%Y-%m-%d_%H:%M:%S.%f")[:-3],
-        "duration": duration,
+        "duration in sec": duration,
         "output path": output_file_path
     }
 
